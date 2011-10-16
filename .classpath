@@ -6,5 +6,6 @@
 	<classpathentry kind="lib" path="C:/Users/Voomer/Desktop/Pal mundo/commons-io-2.0.1-bin/commons-io-2.0.1/commons-io-2.0.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Voomer/Desktop/Pal mundo/commons-io-2.0.1-bin/commons-io-2.0.1/commons-io-2.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Voomer/Desktop/Pal mundo/commons-lang-2.4.jar/commons-lang-2.4.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

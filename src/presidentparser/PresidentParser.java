@@ -24,13 +24,14 @@ public class PresidentParser {
 			String currentline = lt.nextLine();
 			FileWriter writer = new FileWriter(outputFile);
 			State state;
+			//document always starts with ignored
 			currentline = "<ignore>" + currentline;
 			String previousline;
-			if (StringUtils.contains(currentline, "Q.") == false) 
-			{
+			//Checks to see if the interview starts off with a question, may not be necessary
+			if (StringUtils.contains(currentline, "Q.") == false) {
 				boolean questionFound = false;
-				while (questionFound == false)
-				{
+				//looks for the first question
+				while (questionFound == false) {
 					writer.write(currentline + newLine);
 					currentline = lt.nextLine();
 					if (StringUtils.contains(currentline, "Q.")) {
@@ -38,50 +39,42 @@ public class PresidentParser {
 					}
 				}
 			}
+
 			previousline = currentline;
 			state = State.OTHERSPEAKER;
-			while(lt.hasNext())
-			{
+			while(lt.hasNext()) {
 				currentline = lt.next();
 				switch (state) {
+				// being in this state means the president is talking
 				case PRESIDENT:
-					//writer.write("--------------STATE PRESIDENT--------------------" + newLine);
-					//should be changed to substrings
 					if (StringUtils.contains(currentline, "Q.") ) {
-						if ((previousline.trim().length() != 0 ) && Character.isLetter(previousline.charAt(previousline.trim().length() - 1))) {
+						if ((previousline.trim().length() != 0 ) && Character.isLetter
+								(previousline.charAt(previousline.trim().length() - 1))) {
 							previousline = "<ignore> " + previousline;
-						}
-						else {
-							if (currentline.startsWith("["))
+						} else {
+							if (currentline.startsWith("[")) {
 								currentline = ("<ignore>" + currentline);
-							else
+							} else {
 								currentline = StringUtils.replace(currentline, "Q.", "<ignore>Q.");
-						
+							}
 						}
 						state = State.OTHERSPEAKER;
-					}
-					else if(currentline.startsWith("Reporter:") || currentline.startsWith("Voices:") || currentline.startsWith("REPORTER."))
+					} else if(currentline.startsWith("Reporter:") || currentline.startsWith("Voices:") 
+							|| currentline.startsWith("REPORTER.")) {
 						currentline = ("<ignore>" + currentline);
-					else
-					{
+					} else {
 						currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
 						currentline = StringUtils.replace(currentline, "]", "]</ignore>");
 					}
+					// being in this state means someone other than the president is talking
 				case OTHERSPEAKER:
-					//writer.write("--------------STATE QUESTION--------------------" + newLine);
-					//needs to be chagnged to use the pattern
-					//if (StringUtils.contains(currentline, "The President.") == true) {
 					if (currentline.startsWith("The President.") || currentline.startsWith("THE PRESIDENT.")) {	
-					//currentline = StringUtils.replace(currentline, "The President.", "The President.</ignore>");
 						currentline = presidentPattern.matcher(currentline).replaceFirst("The President.</ignore>");
 						state = State.PRESIDENT;
-						//System.out.println("State Change President");
-						//writer.write("Question did this---->");
 						currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
 						currentline = StringUtils.replace(currentline, "]", "]</ignore>");
 					}
-				default: break;
-				}
+				default: break; }
 				writer.write(previousline + newLine);
 				previousline = currentline;
 			}
@@ -95,6 +88,11 @@ public class PresidentParser {
 
 	private void preProcess(LineIterator lt, FileWriter writer) {
 
+	}
+	
+	private String removeBrackets(String currentline)
+	{
+		return null;
 	}
 
 
