@@ -7,7 +7,7 @@ import org.apache.commons.io.*;
 import org.apache.commons.lang.*;
 import presidentparser.*;
 
-public class PresidentalTester {
+public class Main {
 
 	/**
 	 * @param args
