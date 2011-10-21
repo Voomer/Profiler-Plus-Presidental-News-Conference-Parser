@@ -1,9 +1,14 @@
                                                                      
+                                                                     
+                                                                     
+                                             
 Lafleur, McKendon and John Beieler. "PresidentParser: Automated Mark-up Utility." Accessed from johnbeieler.weebly.com.
 
 PresidentParser is a program that aids in the marking-up a speech act to be run through Social Science Automation's Profiler Plus program. The program ignores the parts of the speech that has not been uttered by the President in response to a question. This means that the initial opening of a conference is ignored, questions are ignored, comments in brackets are ignored, and question headers are ignored. As mentioned in Step 6, the program is highly accurate, but does occasionally miss a part of the conference that should be ignored. This makes it necessary to review each speech act after it has been run through the program to make sure Parser caught everything. The program was written by McKendon Lafleur of Louisiana State University, with a small amount of help from John Beieler, also of Louisiana State University.
 
-This version of the program only works on the Mac OS X operating system. This version of the program is set up to mark-up a Presidential News Conference, as formatted by The American Presidency Project (http://www.presidency.ucsb.edu/). To use the program follow these instructions.
+This version of the program is set up to mark-up a Presidential News Conference, as formatted by The American Presidency Project (http://www.presidency.ucsb.edu/). To use the program follow these instructions.
+
+Mac OS X:
 
 1) Place the program into your main directory such as "/Users/username" but without the quotation marks, and replacing username with your own username. 
 
@@ -21,10 +26,18 @@ java -jar PresidentParserJRE6.jar "/Users/username/text" "/Users/username/output
 
 Note: If you place the parser in a folder other than the main directory you will need to fill in the path to it. If this is the case you will need to type something such as /Users/username/Desktop/PresidentParserJRE6.jar if the program in on your desktop, or /Users/username/Documents/PresidentParserJRE6.jar if the program is in your Documents folder. 
 
+The program can also be run on a single file with the same command structure as for running a batch of files:
+
+java -jar PresidentParserJRE6.jar "inputfile" "outputfile"
+
 6) The program is highly accurate, but does occasionally miss some parts. It is necessary to look over a file after it has been run through the parser to ensure that the program has correctly parsed the file. 
 
 7) Please cite the program as follows:
 
 Lafleur, McKendon and John Beieler. "PresidentParser: Automated Mark-up Utility." Accessed from johnbeieler.weebly.com.
+
+Windows:
+
+The steps are the same as for Mac OS X, except the commands must be entered into the command prompt, found under the Accessories folder in the Start menu. The other exception is that users may need to setup Java to be called from the command prompt. Please follow the guide at http://www.java.com/en/download/help/path.xml to do this.
 
 If you have any questions please contact McKendon Lafleur at McKendon@acm.org, or John Beieler at jbeiel1@lsu.edu.

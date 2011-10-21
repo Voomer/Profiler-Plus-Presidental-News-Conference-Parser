@@ -68,7 +68,8 @@ public class PresidentParser {
 					}
 					// being in this state means someone other than the president is talking
 				case OTHERSPEAKER:
-					if (currentline.startsWith("The President.") || currentline.startsWith("THE PRESIDENT.")) {	
+					if (currentline.startsWith("The President.") || currentline.startsWith("THE PRESIDENT.")
+							|| currentline.startsWith("THE PRESIDENT:")) {	
 						currentline = presidentPattern.matcher(currentline).replaceFirst("The President.</ignore>");
 						state = State.PRESIDENT;
 						currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
