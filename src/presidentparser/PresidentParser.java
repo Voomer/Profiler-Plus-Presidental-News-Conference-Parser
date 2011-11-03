@@ -1,3 +1,6 @@
+//need to make this more polymorphic with ignore signalers and ignore enders
+
+
 package presidentparser;
 import java.io.File;
 import java.io.FileWriter;
@@ -17,7 +20,7 @@ public class PresidentParser {
 	public PresidentParser()
 	{
 	}
-
+	
 	public void parseFile(File inputFile, File outputFile) {
 		try {
 			LineIterator lt = FileUtils.lineIterator(inputFile);
@@ -39,41 +42,25 @@ public class PresidentParser {
 					}
 				}
 			}
-
 			previousline = currentline;
 			state = State.OTHERSPEAKER;
+			Result result;
 			while(lt.hasNext()) {
 				currentline = lt.next();
 				switch (state) {
 				// being in this state means the president is talking
 				case PRESIDENT:
-					if (StringUtils.contains(currentline, "Q.") ) {
-						if ((previousline.trim().length() != 0 ) && Character.isLetter
-								(previousline.charAt(previousline.trim().length() - 1))) {
-							previousline = "<ignore> " + previousline;
-						} else {
-							if (currentline.startsWith("[")) {
-								currentline = ("<ignore>" + currentline);
-							} else {
-								currentline = StringUtils.replace(currentline, "Q.", "<ignore>Q.");
-							}
-						}
-						state = State.OTHERSPEAKER;
-					} else if(currentline.startsWith("Reporter:") || currentline.startsWith("Voices:") 
-							|| currentline.startsWith("REPORTER.")) {
-						currentline = ("<ignore>" + currentline);
-					} else {
-						currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
-						currentline = StringUtils.replace(currentline, "]", "]</ignore>");
-					}
-					// being in this state means someone other than the president is talking
+					result = presidentCase(previousline, currentline);
+					currentline = result.currentLine;
+					previousline = result.previousLine;
+					if (result.state != null)
+							state = result.state;					
 				case OTHERSPEAKER:
 					if (currentline.startsWith("The President.") || currentline.startsWith("THE PRESIDENT.")
 							|| currentline.startsWith("THE PRESIDENT:")) {	
 						currentline = presidentPattern.matcher(currentline).replaceFirst("The President.</ignore>");
 						state = State.PRESIDENT;
-						currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
-						currentline = StringUtils.replace(currentline, "]", "]</ignore>");
+						currentline = removeBrackets(currentline);	
 					}
 				default: break; }
 				writer.write(previousline + newLine);
@@ -90,13 +77,53 @@ public class PresidentParser {
 	private void preProcess(LineIterator lt, FileWriter writer) {
 
 	}
-	
-	private String removeBrackets(String currentline)
+
+	//removes brackets for a line
+	public String removeBrackets(String currentline)
 	{
-		return null;
+		currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
+		currentline = StringUtils.replace(currentline, "]", "]</ignore>");
+		//System.out.println(currentline);
+		return currentline;
 	}
-
-
-
-
+	
+	public Result presidentCase(String previousLine, String currentLine) {
+		State state = null;
+		if (StringUtils.contains(currentLine, "Q.") ) {
+			//checks to see if the previous line is a title by
+			if ((previousLine.trim().length() != 0 ) && Character.isLetter
+					(previousLine.charAt(previousLine.trim().length() - 1))) 
+				previousLine = "<ignore> " + previousLine;
+				else if (currentLine.startsWith("[")) {
+					currentLine = ("<ignore>" + currentLine);
+				} else {
+					currentLine = StringUtils.replace(currentLine, "Q.", "<ignore>Q.");
+				}
+			state = State.OTHERSPEAKER;
+		} else if(currentLine.startsWith("Reporter:") || currentLine.startsWith("Voices:") 
+				|| currentLine.startsWith("REPORTER.")) {
+			currentLine = ("<ignore>" + currentLine);
+		} else {
+			currentLine = removeBrackets(currentLine);
+		}
+		return new Result(state, currentLine, previousLine);
+	}
+	
+	//this thing exists because java doesn't allow me to have multiple return types
+	
+	public boolean otherSpeaker() {
+		return true;
+		
+	}
+	
+	public class Result {
+		public State state;
+		public String currentLine;
+		public String previousLine;
+		public Result(State state, String currentLine,String previousLine)	{
+			this.state = state;
+			this.currentLine = currentLine;
+			this.previousLine = previousLine;
+		}
+	}
 }
