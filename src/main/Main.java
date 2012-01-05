@@ -1,11 +1,15 @@
 package main;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.HashSet;
 import org.apache.commons.io.*;
-import org.apache.commons.lang.*;
-import presidentparser.*;
+
+
+import parsers.*;
 
 public class Main {
 
@@ -13,36 +17,59 @@ public class Main {
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
-		if (args.length > 2 ) {
+		if (args.length > 4 ) {
 			System.out.println("incorrent amount of arguments");
 		}
 		
-		else {;
-			PresidentParser parser = new PresidentParser(); 
+		else {
+			String path = System.getProperty("user.dir");
+			System.out.println(path);
+			HashSet<String> record = new HashSet<String>(FileUtils.readLines(new File(args[2])));
+			HashSet<String> ignore = new HashSet<String>(FileUtils.readLines(new File(args[3])));
 			File input = new File(args[0]);
 			File output = new File(args[1]);
+			Context context;
+			String[] parsed;
 			if (input.isDirectory() && output.isDirectory()) {
 				System.out.println("processing directory");
 				File[] inputFiles = input.listFiles();
+				
 				for (int i = 0; i < inputFiles.length; i++) {
 					if ( !(inputFiles[i].isHidden()) && inputFiles[i].getName().endsWith(".txt")) {
 						System.out.println("processing " + inputFiles[i].getName());
-						parser.parseFile(inputFiles[i], new File(output + "//" + inputFiles[i].getName().replace(".txt", ".pro")));
+						context = new Context(record, ignore, inputFiles[i]);
+						parsed = context.parse(new PreProcessState(context));
+						FileUtils.writeLines(new File(output + "//" + inputFiles[i].getName().replace(".txt", ".pro")), Arrays.asList(parsed));
 					}
 				}
 			}
 			
 			else if(input.isFile()) {
 				System.out.println("processing file");
-				parser.parseFile(new File(args[0]), new File(args[1]));
-				
+				context = new Context(record, ignore, new File(args[0]));
+				parsed = context.parse(new PreProcessState(context));
+				FileUtils.writeLines(new File(args[1]), Arrays.asList(parsed));			
 			}
 
 			else {
 				System.out.println("Arguments must be either both directories a file.");
-			}
-		}
+			}					
+		}	
 	}
+	
+	public static String getPathToJarfileDir(Object classToUse) {
+		  String url = classToUse.getClass().getResource("/" + classToUse.getClass().getName().replaceAll("\\.", "/") + ".class").toString();
+		  url = url.substring(4).replaceFirst("/[^/]+\\.jar!.*$", "/");
+		  try {
+		      File dir = new File(new URL(url).toURI());
+		      url = dir.getAbsolutePath();
+		  } catch (MalformedURLException mue) {
+		      url = null;
+		  } catch (URISyntaxException ue) {
+		      url = null;
+		  }
+		  return url;
+		}
 }

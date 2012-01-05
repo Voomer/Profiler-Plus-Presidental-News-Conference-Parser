@@ -1,24 +1,40 @@
-//need to make this more polymorphic with ignore signalers and ignore enders
 
 
-package presidentparser;
+package Deprecated;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.regex.*;
 import org.apache.commons.lang.*;
 import org.apache.commons.io.*;
 
+import Deprecated.PresidentParser.State;
+
+
 public class PresidentParser {
 	static String newLine = String.format("%n");;
 	static Pattern presidentPattern = Pattern.compile("(?i)The President.");
+	HashSet<String> ignore;
+	HashSet<String> record;
 
-	private enum State{
+	public enum State{
 		PRESIDENT, OTHERSPEAKER
 	}
 
 	public PresidentParser()
 	{
+		ignore = new HashSet<String>();
+		record = new HashSet<String>();
+		ignore.add("Voices:");
+		ignore.add("Q.");
+		ignore.add("REPORTER.");
+		ignore.add("Reporter:");
+		record.add("The President.");
+		record.add("The President:");
+		record.add("THE PRESIDENT.");
+		record.add("THE PRESIDENT:");
 	}
 	
 	public void parseFile(File inputFile, File outputFile) {
@@ -87,6 +103,16 @@ public class PresidentParser {
 		return currentline;
 	}
 	
+	public Result otherSpeakerCase(String currentLine) {
+		if (currentLine.startsWith("The President.") || currentLine.startsWith("THE PRESIDENT.")
+				|| currentLine.startsWith("THE PRESIDENT:")) {	
+			currentLine = presidentPattern.matcher(currentLine).replaceFirst("The President.</ignore>");
+			State state = State.PRESIDENT;
+			currentLine = removeBrackets(currentLine);	
+		}
+		return null;
+	}
+	
 	public Result presidentCase(String previousLine, String currentLine) {
 		State state = null;
 		if (StringUtils.contains(currentLine, "Q.") ) {
@@ -100,8 +126,7 @@ public class PresidentParser {
 					currentLine = StringUtils.replace(currentLine, "Q.", "<ignore>Q.");
 				}
 			state = State.OTHERSPEAKER;
-		} else if(currentLine.startsWith("Reporter:") || currentLine.startsWith("Voices:") 
-				|| currentLine.startsWith("REPORTER.")) {
+		} else if(checkBeginning(currentLine, ignore)) {
 			currentLine = ("<ignore>" + currentLine);
 		} else {
 			currentLine = removeBrackets(currentLine);
@@ -111,9 +136,14 @@ public class PresidentParser {
 	
 	//this thing exists because java doesn't allow me to have multiple return types
 	
-	public boolean otherSpeaker() {
-		return true;
-		
+	public boolean checkBeginning(String string, HashSet set) {
+		Iterator<String> iter = set.iterator();
+		String check;
+		while (iter.hasNext()) {;
+			check = iter.next();
+			if (string.startsWith(check)) return true;
+		}
+		return false;	
 	}
 	
 	public class Result {
