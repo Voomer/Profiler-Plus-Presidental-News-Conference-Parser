@@ -16,7 +16,7 @@ public abstract class State {
 		this.context = context;
 	}
 	
-	protected String removeEnclosings(String currentline)
+	public String removeEnclosings(String currentline)
 	{
 		currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
 		currentline = StringUtils.replace(currentline, "]", "]</ignore>");

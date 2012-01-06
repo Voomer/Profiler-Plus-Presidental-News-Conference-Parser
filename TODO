@@ -1,2 +1,4 @@
-1. Refactor parseFile into smaller methods.
-2. Come up with the scheme for parsing the end of the older interviews. 
+1. Stop creating a new state every state switch.
+2. Partner wants regex expressions to work out of the dictionary.
+3. Naming convention inconsistencies.
+4. Update Readme.
