@@ -25,7 +25,7 @@ public class PreProcessState extends State{
 			}
 			context.cursor = context.cursor + 1;						
 		}
-		for (int i = 0; i < context.size; i++) {
+		for (int i = 0; i < context.length; i++) {
 			context.lines[i] = removeEnclosings(context.lines[i]);
 		}
 		return false;		

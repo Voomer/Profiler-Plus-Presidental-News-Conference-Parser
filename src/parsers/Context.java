@@ -11,8 +11,12 @@ package parsers;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -20,12 +24,12 @@ import org.apache.commons.io.LineIterator;
 
 public class Context {
 	
-	HashSet<String> record, ignore;
+	Pattern record, ignore;
 	State state;
 	int cursor;
 	String[] lines;
-	int size;
-	public Context(HashSet<String> record, HashSet<String>ignore, File file) throws IOException {
+	int length;
+	public Context(LinkedList<String> record, LinkedList<String> ignore, File file) throws IOException {
 		this(record, ignore, fileToArray(file));	
 	}
 	
@@ -43,25 +47,45 @@ public class Context {
 		return array;
 	}
 	
-	public Context(HashSet<String> record, HashSet<String>ignore, String[] lines) {
-		this.record = record;
-		this.ignore = ignore;
-		this.lines = lines;	
-		this.size = lines.length;
+	
+	public Context(LinkedList<String> record, LinkedList<String> ignore, String[] lines) {
+		StringBuilder recordRegex = new StringBuilder();
+		for (String string : record) {
+			recordRegex.append("^");
+			recordRegex.append(string);
+			recordRegex.append("|");
+		}
+		System.out.println(recordRegex);
+		recordRegex.deleteCharAt(recordRegex.length()-1);
+		System.out.println(recordRegex);
+		
+		StringBuilder ignoreRegex = new StringBuilder();
+		for (String string : ignore) {
+			ignoreRegex.append("^");
+			ignoreRegex.append(string);
+			ignoreRegex.append("|");
+		}
+		System.out.println(ignoreRegex);
+		ignoreRegex.deleteCharAt(ignoreRegex.length()-1);	
+		System.out.println(ignoreRegex);
+
+		this.record = Pattern.compile(recordRegex.toString());
+		this.ignore = Pattern.compile(ignoreRegex.toString());
+		this.lines = lines;
+		this.length = lines.length;
+		System.out.println(Arrays.toString(lines));
 	}
 	
-	public String containsAny(String string, HashSet<String> set) {
-		Iterator<String> iter = set.iterator();
-		String check;
-		while (iter.hasNext()) {;
-			check = iter.next();
-			if (string.contains(check)) return check;
-		}
-		return null;	
+	public String containsAny(String string, Pattern pattern) {
+		Matcher matcher = pattern.matcher(string);
+		if (matcher.find()) 
+			return matcher.group();			
+		else
+			return null;	
 	}
 	
 	public boolean EOF() {
-		return (cursor == size);
+		return (cursor == length);
 	}
 	
 	

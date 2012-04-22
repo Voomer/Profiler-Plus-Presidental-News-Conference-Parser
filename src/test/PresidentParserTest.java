@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import parsers.Context;
 import parsers.PreProcessState;
@@ -35,8 +36,8 @@ public class PresidentParserTest extends TestCase {
 
 	public void testStateSwitch() {
 
-		HashSet<String> record = new HashSet<String>();
-		HashSet<String> ignore = new HashSet<String>();
+		LinkedList<String> record = new LinkedList<String>();
+		LinkedList<String> ignore = new LinkedList<String>();
 		record.add("The President.");
 		record.add("THE PRESIDENT.");
 		ignore.add("Q.");

@@ -6,6 +6,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
+
 import org.apache.commons.io.*;
 
 
@@ -26,8 +28,8 @@ public class Main {
 		else {
 			String path = System.getProperty("user.dir");
 			System.out.println(path);
-			HashSet<String> record = new HashSet<String>(FileUtils.readLines(new File(args[2])));
-			HashSet<String> ignore = new HashSet<String>(FileUtils.readLines(new File(args[3])));
+			LinkedList<String> record = new LinkedList<String>(FileUtils.readLines(new File(args[2])));
+			LinkedList<String> ignore = new LinkedList<String>(FileUtils.readLines(new File(args[3])));
 			File input = new File(args[0]);
 			File output = new File(args[1]);
 			Context context;
