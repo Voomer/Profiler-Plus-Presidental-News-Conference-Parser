@@ -5,12 +5,8 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
-
 import org.apache.commons.io.*;
-
-
 import parsers.*;
 
 public class Main {
@@ -21,7 +17,7 @@ public class Main {
 	 */
 	public static void main(String[] args) throws IOException {
 
-		if (args.length > 4 ) {
+		if (args.length > 6 ) {
 			System.out.println("incorrent amount of arguments");
 		}
 		
@@ -30,6 +26,11 @@ public class Main {
 			System.out.println(path);
 			LinkedList<String> record = new LinkedList<String>(FileUtils.readLines(new File(args[2])));
 			LinkedList<String> ignore = new LinkedList<String>(FileUtils.readLines(new File(args[3])));
+			String ignoreHeader;
+			if (args.length > 4)
+				ignoreHeader = args[4].toLowerCase();
+			else
+				ignoreHeader = "true";
 			File input = new File(args[0]);
 			File output = new File(args[1]);
 			Context context;
@@ -42,7 +43,7 @@ public class Main {
 					if ( !(inputFiles[i].isHidden()) && inputFiles[i].getName().endsWith(".txt")) {
 						System.out.println("processing " + inputFiles[i].getName());
 						context = new Context(record, ignore, inputFiles[i]);
-						parsed = context.parse(new PreProcessState(context));
+						parsed = context.parse(new PreProcessState(context, ignoreHeader));
 						FileUtils.writeLines(new File(output + "//" + inputFiles[i].getName().replace(".txt", ".pro")), Arrays.asList(parsed));
 					}
 				}
@@ -51,12 +52,12 @@ public class Main {
 			else if(input.isFile()) {
 				System.out.println("processing file");
 				context = new Context(record, ignore, new File(args[0]));
-				parsed = context.parse(new PreProcessState(context));
+				parsed = context.parse(new PreProcessState(context, ignoreHeader));
 				FileUtils.writeLines(new File(args[1]), Arrays.asList(parsed));			
 			}
 
 			else {
-				System.out.println("Arguments must be either both directories a file.");
+				System.out.println("Arguments must be either both directories or a file.");
 			}					
 		}	
 	}

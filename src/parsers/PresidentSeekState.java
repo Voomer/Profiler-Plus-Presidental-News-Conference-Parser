@@ -3,7 +3,7 @@
  */
 package parsers;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PresidentSeekState extends State {
 

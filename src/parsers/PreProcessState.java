@@ -6,28 +6,29 @@
 
 package parsers;
 
+import org.apache.commons.lang3.StringUtils;
+
 
 public class PreProcessState extends State{
-	
+	private String ignoreHeader;
 
-	public PreProcessState(Context context) {
+	public PreProcessState(Context context, String skipFirst) {
 		super(context);
+		this.ignoreHeader = skipFirst;
 	}
 
 	@Override
 	public boolean go() {
 		//look for the first
-		while (!context.EOF()) {
-			if (context.containsAny(context.lines[context.cursor], context.ignore) != null) {
-				context.state = new PresidentSeekState(context);
+				if (ignoreHeader.equals("true")) 
+					context.state = new PresidentSeekState(context);
+				else {
+					context.state = new PresRecordState(context);
+					String result = context.containsAny(context.lines[context.cursor], context.record);
+					context.lines[context.cursor] = 
+							StringUtils.replace(context.lines[context.cursor], result, result + "</ignore>");
+				}
 				context.lines[0] = "<ignore>" + context.lines[0];
-				return true;
-			}
-			context.cursor = context.cursor + 1;						
-		}
-		for (int i = 0; i < context.length; i++) {
-			context.lines[i] = removeEnclosings(context.lines[i]);
-		}
-		return false;		
+				return true;		
 	}
 }

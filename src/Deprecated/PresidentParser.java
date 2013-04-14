@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.regex.*;
-import org.apache.commons.lang.*;
+import org.apache.commons.lang3.*;
 import org.apache.commons.io.*;
-
-import Deprecated.PresidentParser.State;
 
 
 public class PresidentParser {
@@ -90,16 +88,11 @@ public class PresidentParser {
 		}
 	}
 
-	private void preProcess(LineIterator lt, FileWriter writer) {
-
-	}
-
 	//removes brackets for a line
 	public String removeBrackets(String currentline)
 	{
 		currentline = StringUtils.replace(currentline, "[", "<ignore>[");		
 		currentline = StringUtils.replace(currentline, "]", "]</ignore>");
-		//System.out.println(currentline);
 		return currentline;
 	}
 	
@@ -107,7 +100,6 @@ public class PresidentParser {
 		if (currentLine.startsWith("The President.") || currentLine.startsWith("THE PRESIDENT.")
 				|| currentLine.startsWith("THE PRESIDENT:")) {	
 			currentLine = presidentPattern.matcher(currentLine).replaceFirst("The President.</ignore>");
-			State state = State.PRESIDENT;
 			currentLine = removeBrackets(currentLine);	
 		}
 		return null;
@@ -136,7 +128,7 @@ public class PresidentParser {
 	
 	//this thing exists because java doesn't allow me to have multiple return types
 	
-	public boolean checkBeginning(String string, HashSet set) {
+	public boolean checkBeginning(String string, HashSet<String> set) {
 		Iterator<String> iter = set.iterator();
 		String check;
 		while (iter.hasNext()) {;

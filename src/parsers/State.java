@@ -7,7 +7,7 @@ package parsers;
 
 
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class State {
 	
@@ -22,7 +22,6 @@ public abstract class State {
 		currentline = StringUtils.replace(currentline, "]", "]</ignore>");
 		currentline = StringUtils.replace(currentline, "(", "<ignore>(");		
 		currentline = StringUtils.replace(currentline, ")", ")</ignore>");
-		//System.out.println(currentline);
 		return currentline;
 	}
 	

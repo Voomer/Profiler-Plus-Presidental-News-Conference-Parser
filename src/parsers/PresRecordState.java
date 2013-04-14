@@ -5,7 +5,7 @@ package parsers;
  * context. Sometimes there are paragraph headers above the signal, therefore the
  * algorithm checks to see if they line above the signal has no punctuation at the end.
  */
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class PresRecordState extends State {
 

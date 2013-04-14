@@ -12,8 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,7 +44,6 @@ public class Context {
 		array =  lines.toArray(array);
 		return array;
 	}
-	
 	
 	public Context(LinkedList<String> record, LinkedList<String> ignore, String[] lines) {
 		StringBuilder recordRegex = new StringBuilder();
@@ -88,11 +85,9 @@ public class Context {
 		return (cursor == length);
 	}
 	
-	
 	public String[] parse(State intial) {
 		state = intial;
 		while (state.go()) {}
 		return lines;
 	}
-
 }

@@ -1,9 +1,5 @@
 package test;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import parsers.Context;
@@ -11,18 +7,13 @@ import parsers.PreProcessState;
 import parsers.PresRecordState;
 import parsers.PresidentSeekState;
 import junit.framework.*;
-import org.apache.commons.io.*;
-import org.junit.Before;
-
 import parsers.State;
-
 
 public class PresidentParserTest extends TestCase {
 	
-
 	public void testRemoveEnclosings() {
 		Context context = null;
-		State state = new PreProcessState(context);
+		State state = new PreProcessState(context, "false");
 		String testString1 = "efwef[dewef]--";
 		String resultString1 = "efwef<ignore>[dewef]</ignore>--";
 		String testString2 = "Hey guys --[Hi]";
@@ -58,7 +49,6 @@ public class PresidentParserTest extends TestCase {
 		assertEquals(results[1], expectedResults[0]);
 		assertEquals(results[2], expectedResults[1]);
 
-		//side effects cause this to change, maybe copy over the array?
 		
 		lines[0] = "Q. President Ron Paul, are you happy with your accomplishments " +
 				"of your adminstraton?";
@@ -75,7 +65,6 @@ public class PresidentParserTest extends TestCase {
 		assertEquals(results2[0], expectedResults2[0]);
 		assertEquals(results2[1], expectedResults2[1]);
 
-		//side effects cause this to change, maybe copy over the array?
 		lines = new String[2];
 		lines[0] = "PlaceHolder.";
 		lines[1] = "Q. President Ron Paul, are you happy with your accomplishments " +
@@ -87,9 +76,5 @@ public class PresidentParserTest extends TestCase {
 				"of your adminstraton?</ignore>";
 
 		assertEquals(results3[1], expectedResults4[0]);
-
-
-
-
 	}
 }
